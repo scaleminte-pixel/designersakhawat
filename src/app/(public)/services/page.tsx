@@ -3,7 +3,7 @@ import Footer from "@/components/public/Footer";
 import ContactCTA from "@/components/public/ContactCTA";
 import TestimonialsSection from "@/components/public/TestimonialsSection";
 import ClientLogosSection from "@/components/public/ClientLogosSection";
-import FAQSection from "@/components/public/FaqSection";
+import FAQSection from "@/components/public/FAQSection";
 import ProcessWorkflowSection from "@/components/public/ProcessWorkflowSection";
 import ServiceGuaranteesSection from "@/components/public/ServiceGuaranteesSection";
 import ServicesInteractiveGrid from "@/components/public/ServicesInteractiveGrid";
