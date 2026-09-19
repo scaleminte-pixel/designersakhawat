@@ -224,6 +224,9 @@ export default function PortfolioPerServiceShowcase({
                           alt={item.title}
                           loading="lazy"
                           className="portfolio-square-img"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/projects/project-1.webp";
+                          }}
                         />
                         <div className="card-hover-overlay">
                           <span className="card-hover-badge">{item.badge}</span>
@@ -253,6 +256,9 @@ export default function PortfolioPerServiceShowcase({
                           alt={item.title}
                           loading="lazy"
                           className="portfolio-square-img"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/projects/project-1.webp";
+                          }}
                         />
                         <div className="card-hover-overlay">
                           <span className="card-hover-badge">{item.badge}</span>
@@ -286,6 +292,9 @@ export default function PortfolioPerServiceShowcase({
                           alt={item.title}
                           loading="lazy"
                           className="portfolio-square-img"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/projects/project-1.webp";
+                          }}
                         />
                         <div className="card-hover-overlay">
                           <span className="card-hover-badge">{item.badge}</span>
@@ -315,6 +324,9 @@ export default function PortfolioPerServiceShowcase({
                           alt={item.title}
                           loading="lazy"
                           className="portfolio-square-img"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/images/projects/project-1.webp";
+                          }}
                         />
                         <div className="card-hover-overlay">
                           <span className="card-hover-badge">{item.badge}</span>

@@ -174,6 +174,9 @@ export default function UnifiedCapabilitiesBento({ dbServices = [] }: UnifiedCap
                     objectPosition: "center center",
                     transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
                   }}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "/images/projects/project-1.webp";
+                  }}
                 />
               </div>
 

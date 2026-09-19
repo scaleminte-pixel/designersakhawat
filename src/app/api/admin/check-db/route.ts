@@ -82,12 +82,30 @@ export async function POST() {
     await execute("UPDATE services SET cover_media_id = 24 WHERE id = 3");
     await execute("UPDATE services SET cover_media_id = 4 WHERE id = 4");
 
+    // Clean up project_media records pointing to dead /hbuilds/ paths
+    await execute(`
+      DELETE pm FROM project_media pm
+      JOIN media m ON pm.media_id = m.id
+      WHERE m.storage_path LIKE '%/hbuilds/%'
+    `);
+
+    // Clear broken cover_media_id from projects if pointing to dead /hbuilds/
+    await execute(`
+      UPDATE projects p
+      JOIN media m ON p.cover_media_id = m.id
+      SET p.cover_media_id = NULL
+      WHERE m.storage_path LIKE '%/hbuilds/%'
+    `);
+
     revalidatePath("/");
     revalidatePath("/services");
+    revalidatePath("/portfolio");
+    revalidatePath("/about");
+    revalidatePath("/contact");
 
     return NextResponse.json({
       status: "SUCCESS",
-      message: "Successfully fixed media 22, 24, 25 to permanent Cloudinary URLs!",
+      message: "Successfully cleaned dead media paths, linked Cloudinary URLs, and purged caches!",
     });
   } catch (err: unknown) {
     const error = err as { message?: string };

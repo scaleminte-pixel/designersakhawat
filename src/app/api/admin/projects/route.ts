@@ -87,3 +87,25 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ success: true });
   });
 }
+
+/** DELETE /api/admin/projects?action=empty_trash — delete all trashed projects permanently */
+export async function DELETE(req: NextRequest) {
+  return requireAdmin(req, async () => {
+    const url = new URL(req.url);
+    const action = url.searchParams.get("action");
+    if (action === "empty_trash") {
+      const trashed = await query<{ id: number; slug: string }>("SELECT id, slug FROM projects WHERE status = 'trashed'");
+      for (const t of trashed) {
+        await execute("DELETE FROM project_media WHERE project_id = ?", [t.id]);
+        await execute("DELETE FROM projects WHERE id = ?", [t.id]);
+        revalidatePath(`/portfolio/${t.slug}`);
+      }
+      revalidatePath("/portfolio");
+      revalidatePath("/");
+      await execute("INSERT INTO activity_log (action, entity_type, entity_id, detail) VALUES (?, ?, ?, ?)",
+        ["trash_emptied", "project", 0, `Emptied trash (${trashed.length} projects permanently deleted)`]);
+      return NextResponse.json({ success: true, deletedCount: trashed.length });
+    }
+    return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+  });
+}

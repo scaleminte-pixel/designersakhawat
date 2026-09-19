@@ -122,10 +122,18 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }
 
     if (body.action === "restore") {
-      await execute("UPDATE projects SET status='draft', deleted_at=NULL WHERE id=?", [id]);
+      const targetStatus = body.status || "published";
+      await execute("UPDATE projects SET status=?, deleted_at=NULL WHERE id=?", [targetStatus, id]);
+      const p = await queryOne<{ slug: string; service_id: number | null }>("SELECT slug, service_id FROM projects WHERE id=?", [id]);
+      if (p) {
+        revalidatePath("/portfolio");
+        revalidatePath(`/portfolio/${p.slug}`);
+        revalidatePath("/");
+        if (p.service_id) revalidatePath("/services");
+      }
       await execute("INSERT INTO activity_log (action, entity_type, entity_id, detail) VALUES (?, ?, ?, ?)",
-        ["project_restored", "project", parseInt(id), "Restored project from trash"]);
-      return NextResponse.json({ success: true });
+        ["project_restored", "project", parseInt(id), `Restored project from trash as ${targetStatus}`]);
+      return NextResponse.json({ success: true, status: targetStatus });
     }
 
     // Update media gallery

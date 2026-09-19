@@ -90,7 +90,7 @@ export default function HeroSection({ settings, featuredProjects = [] }: HeroSec
               ? (p as unknown as { cover_medium?: string }).cover_medium!
               : ((p as unknown as { cover_path?: string }).cover_path && (p as unknown as { cover_path?: string }).cover_path?.startsWith("http"))
               ? (p as unknown as { cover_path?: string }).cover_path!
-              : p.cover_media_id
+              : p.cover_media_id && !((p as unknown as { cover_path?: string }).cover_path?.includes("/hbuilds/"))
               ? `/api/media/${p.cover_media_id}?size=medium`
               : "/images/projects/project-1.webp",
           slug: p.slug,

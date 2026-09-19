@@ -139,6 +139,9 @@ export default function ServicesInteractiveGrid({
                     transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
                   }}
                   className="service-cover-img"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "/images/projects/project-1.webp";
+                  }}
                 />
               </Link>
 

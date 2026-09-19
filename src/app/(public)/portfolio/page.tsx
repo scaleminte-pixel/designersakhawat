@@ -18,6 +18,10 @@ export const metadata: Metadata = {
 type ExtendedProject = Project & {
   service_name?: string;
   service_slug?: string;
+  cover_path?: string | null;
+  cover_thumb?: string | null;
+  cover_medium?: string | null;
+  cover_alt?: string | null;
 };
 
 export default async function PortfolioPage() {
@@ -269,9 +273,14 @@ export default async function PortfolioPage() {
       id: p.id,
       title: p.title,
       slug: p.slug,
-      image: p.cover_media_id
-        ? `/api/media/${p.cover_media_id}?size=medium`
-        : cfg.defaultProjects[0].image,
+      image:
+        (p.cover_medium && p.cover_medium.startsWith("http"))
+          ? p.cover_medium
+          : (p.cover_path && p.cover_path.startsWith("http"))
+          ? p.cover_path
+          : p.cover_media_id && !p.cover_path?.includes("/hbuilds/")
+          ? `/api/media/${p.cover_media_id}?size=medium`
+          : cfg.defaultProjects[0].image,
       badge: cfg.badge,
       videoUrl: p.video_url || (cfg.slug === "ai-video-editing" ? "https://www.youtube.com/watch?v=EngW7tLk6R8" : null),
       isVideo: cfg.slug === "ai-video-editing" || Boolean(p.video_url),

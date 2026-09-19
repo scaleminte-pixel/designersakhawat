@@ -54,6 +54,34 @@ export default function AdminProjectsPage() {
     }
   }
 
+  async function deletePermanently(id: number, title: string) {
+    if (!confirm(`Are you sure you want to permanently delete "${title}"? This cannot be undone.`)) {
+      return;
+    }
+    const res = await fetch(`/api/admin/projects/${id}`, { method: "DELETE" });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`Permanently deleted "${title}".`);
+      fetchProjects();
+    } else {
+      showToast(data.error || "Failed to delete.");
+    }
+  }
+
+  async function emptyTrash() {
+    if (!confirm(`Are you sure you want to permanently delete ALL ${projects.length} projects in the trash? This cannot be undone.`)) {
+      return;
+    }
+    const res = await fetch("/api/admin/projects?action=empty_trash", { method: "DELETE" });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`Emptied trash (${data.deletedCount} projects removed).`);
+      fetchProjects();
+    } else {
+      showToast(data.error || "Failed to empty trash.");
+    }
+  }
+
   async function changeStatus(id: number, action: "publish" | "unpublish" | "trash" | "restore") {
     if (action === "trash" && !confirm("Are you sure you want to move this project to trash?")) {
       return;
@@ -61,10 +89,14 @@ export default function AdminProjectsPage() {
     await fetch(`/api/admin/projects/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action }),
+      body: JSON.stringify({ action, status: "published" }),
     });
     fetchProjects();
-    showToast(`Project ${action === "publish" ? "published" : action === "unpublish" ? "unpublished" : action === "trash" ? "trashed" : "restored"}.`);
+    if (action === "restore") {
+      showToast("Project restored and published to portfolio!");
+    } else {
+      showToast(`Project ${action === "publish" ? "published" : action === "unpublish" ? "unpublished" : "moved to trash"}.`);
+    }
   }
 
   return (
@@ -98,13 +130,18 @@ export default function AdminProjectsPage() {
       )}
 
       {/* Filter tabs */}
-      <div style={{ display: "flex", gap: "var(--space-xs)", marginBottom: "var(--space-lg)" }}>
+      <div style={{ display: "flex", gap: "var(--space-xs)", marginBottom: "var(--space-lg)", alignItems: "center" }}>
         {["", "published", "draft", "trashed"].map((s) => (
           <button key={s} onClick={() => setFilter(s)}
             className={`btn btn-sm ${filter === s ? "btn-primary" : "btn-outline"}`}>
             {s === "" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
           </button>
         ))}
+        {filter === "trashed" && projects.length > 0 && (
+          <button onClick={emptyTrash} className="btn btn-sm btn-danger" style={{ marginLeft: "auto" }}>
+            🗑️ Empty Trash ({projects.length})
+          </button>
+        )}
       </div>
 
       {/* Table */}
@@ -165,7 +202,14 @@ export default function AdminProjectsPage() {
                         </>
                       )}
                       {proj.status === "trashed" && (
-                        <button onClick={() => changeStatus(proj.id, "restore")} className="btn btn-ghost btn-sm" style={{ color: "var(--success)" }}>Restore</button>
+                        <>
+                          <button onClick={() => changeStatus(proj.id, "restore")} className="btn btn-ghost btn-sm" style={{ color: "var(--success)" }}>
+                            ↺ Restore
+                          </button>
+                          <button onClick={() => deletePermanently(proj.id, proj.title)} className="btn btn-ghost btn-sm btn-danger" style={{ color: "var(--danger)" }}>
+                            🗑️ Delete Permanently
+                          </button>
+                        </>
                       )}
                     </div>
                   </td>

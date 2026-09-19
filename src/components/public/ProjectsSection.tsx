@@ -44,7 +44,7 @@ export default function ProjectsSection({
           ? (p as unknown as { cover_medium?: string }).cover_medium!
           : ((p as unknown as { cover_path?: string }).cover_path && (p as unknown as { cover_path?: string }).cover_path?.startsWith("http"))
           ? (p as unknown as { cover_path?: string }).cover_path!
-          : p.cover_media_id
+          : p.cover_media_id && !((p as unknown as { cover_path?: string }).cover_path?.includes("/hbuilds/"))
           ? `/api/media/${p.cover_media_id}?size=medium`
           : `/images/projects/project-${(i % 8) + 1}.webp`,
       service: (p as unknown as { service_name?: string }).service_name || "Creative Design",
