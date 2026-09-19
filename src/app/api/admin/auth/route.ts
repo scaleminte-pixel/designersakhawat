@@ -22,16 +22,16 @@ const SESSION_OPTIONS = {
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
   const rateLimitKey = `login:${ip}`;
-  const maxAttempts = parseInt(process.env.RATE_LIMIT_LOGIN || "5");
+  const maxAttempts = parseInt(process.env.RATE_LIMIT_LOGIN || "30");
 
   const rateCheck = checkRateLimit(rateLimitKey, {
     maxRequests: maxAttempts,
-    windowMs: 15 * 60 * 1000, // 15 minutes
+    windowMs: 60 * 1000, // 1 minute window
   });
 
   if (!rateCheck.allowed) {
     return NextResponse.json(
-      { error: "Too many login attempts. Please try again in 15 minutes." },
+      { error: "Too many login attempts. Please wait 1 minute." },
       { status: 429 }
     );
   }
@@ -44,13 +44,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password are required." }, { status: 400 });
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
+    const queryEmail = normalizedEmail === "designersakhawat@gmail.com"
+      ? "designersakhawat86@gmail.com"
+      : normalizedEmail;
+
     const admin = await queryOne<{
       id: number;
       email: string;
       password_hash: string;
       name: string | null;
-    }>("SELECT id, email, password_hash, name FROM admin_users WHERE email = ?", [
-      email.toLowerCase(),
+    }>("SELECT id, email, password_hash, name FROM admin_users WHERE email = ? OR email = ?", [
+      normalizedEmail,
+      queryEmail,
     ]);
 
     if (!admin) {
