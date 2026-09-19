@@ -11,8 +11,25 @@ async function exportSql() {
     database: 'portfolio_db'
   });
 
+  // Order tables by dependency so parent tables are created before foreign keys
+  const orderedTables = [
+    'media',
+    'admin_users',
+    'activity_log',
+    'settings',
+    'industries',
+    'services',
+    'service_packages',
+    'projects',
+    'project_media',
+    'client_logos',
+    'testimonials',
+    'inquiries'
+  ];
+
   const [tables] = await conn.execute('SHOW TABLES');
-  const tableNames = tables.map(t => Object.values(t)[0]);
+  const existingTables = tables.map(t => Object.values(t)[0]);
+  const tableNames = orderedTables.filter(t => existingTables.includes(t));
 
   let sql = '-- Hostinger Portfolio Database Dump\n';
   sql += 'SET NAMES utf8mb4;\n';
