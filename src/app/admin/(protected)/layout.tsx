@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import AdminShell from "@/components/admin/AdminShell";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Admin Panel | Md Sakhawat Hossain",
   robots: { index: false, follow: false },

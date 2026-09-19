@@ -1,34 +1,53 @@
 import { query } from "@/lib/db";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
-  const [projects, services, inquiries, media] = await Promise.all([
-    query<{ count: number; status: string }>(
-      "SELECT status, COUNT(*) as count FROM projects GROUP BY status"
-    ),
-    query<{ count: number }>("SELECT COUNT(*) as count FROM services WHERE deleted_at IS NULL"),
-    query<{ count: number }>("SELECT COUNT(*) as count FROM inquiries WHERE read_at IS NULL"),
-    query<{ count: number }>("SELECT COUNT(*) as count FROM media"),
-  ]);
+  let projectStats: Record<string, number> = {};
+  let servicesCount = 0;
+  let inquiriesCount = 0;
+  let mediaCount = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let recentActivity: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let recentInquiries: any[] = [];
 
-  const projectStats = projects.reduce((acc: Record<string, number>, row) => {
-    acc[row.status] = row.count;
-    return acc;
-  }, {});
+  try {
+    const [projects, services, inquiries, media] = await Promise.all([
+      query<{ count: number; status: string }>(
+        "SELECT status, COUNT(*) as count FROM projects GROUP BY status"
+      ),
+      query<{ count: number }>("SELECT COUNT(*) as count FROM services WHERE deleted_at IS NULL"),
+      query<{ count: number }>("SELECT COUNT(*) as count FROM inquiries WHERE read_at IS NULL"),
+      query<{ count: number }>("SELECT COUNT(*) as count FROM media"),
+    ]);
 
-  const recentActivity = await query(
-    "SELECT * FROM activity_log ORDER BY created_at DESC LIMIT 10"
-  );
-  const recentInquiries = await query(
-    "SELECT * FROM inquiries ORDER BY created_at DESC LIMIT 5"
-  );
+    projectStats = projects.reduce((acc: Record<string, number>, row) => {
+      acc[row.status] = row.count;
+      return acc;
+    }, {});
+
+    servicesCount = services[0]?.count ?? 0;
+    inquiriesCount = inquiries[0]?.count ?? 0;
+    mediaCount = media[0]?.count ?? 0;
+
+    recentActivity = await query(
+      "SELECT * FROM activity_log ORDER BY created_at DESC LIMIT 10"
+    );
+    recentInquiries = await query(
+      "SELECT * FROM inquiries ORDER BY created_at DESC LIMIT 5"
+    );
+  } catch {
+    // Graceful fallback when database connection is not established during build or initial setup
+  }
 
   const stats = [
     { label: "Published Projects", value: projectStats.published ?? 0, href: "/admin/projects?status=published", icon: "📁", color: "var(--accent)" },
     { label: "Draft Projects", value: projectStats.draft ?? 0, href: "/admin/projects?status=draft", icon: "📝", color: "var(--warning)" },
-    { label: "Services", value: services[0]?.count ?? 0, href: "/admin/services", icon: "🎨", color: "var(--info)" },
-    { label: "Unread Inquiries", value: inquiries[0]?.count ?? 0, href: "/admin/inquiries", icon: "✉️", color: (inquiries[0]?.count ?? 0) > 0 ? "var(--danger)" : "var(--success)" },
-    { label: "Media Files", value: media[0]?.count ?? 0, href: "/admin/media", icon: "🖼️", color: "var(--text-secondary)" },
+    { label: "Services", value: servicesCount, href: "/admin/services", icon: "🎨", color: "var(--info)" },
+    { label: "Unread Inquiries", value: inquiriesCount, href: "/admin/inquiries", icon: "✉️", color: inquiriesCount > 0 ? "var(--danger)" : "var(--success)" },
+    { label: "Media Files", value: mediaCount, href: "/admin/media", icon: "🖼️", color: "var(--text-secondary)" },
   ];
 
   return (
