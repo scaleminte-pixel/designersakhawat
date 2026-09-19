@@ -7,7 +7,7 @@ import KineticProofRibbon from "@/components/public/KineticProofRibbon";
 import ProjectsSection from "@/components/public/ProjectsSection";
 import UnifiedCapabilitiesBento from "@/components/public/UnifiedCapabilitiesBento";
 import CreatorProofSection from "@/components/public/CreatorProofSection";
-import FAQSection from "@/components/public/FAQSection";
+import FAQSection from "@/components/public/FaqSection";
 import ContactCTA from "@/components/public/ContactCTA";
 import FloatingWhatsApp from "@/components/public/FloatingWhatsApp";
 import type { Project, Testimonial, Service } from "@/types";
