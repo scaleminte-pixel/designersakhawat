@@ -140,12 +140,22 @@ export default async function ServicesPage() {
   const displayServices = defaultServices.map((def) => {
     const dbMatch = dbServices.find((s) => s.slug === def.slug || s.id === def.id);
     if (!dbMatch) return def;
+
+    const cloudImage =
+      (dbMatch.medium_path && dbMatch.medium_path.startsWith("http"))
+        ? dbMatch.medium_path
+        : (dbMatch.storage_path && dbMatch.storage_path.startsWith("http"))
+        ? dbMatch.storage_path
+        : null;
+
     return {
       ...def,
       ...dbMatch,
-      default_image: dbMatch.cover_media_id
-        ? `/api/media/${dbMatch.cover_media_id}?size=medium`
-        : def.default_image,
+      default_image:
+        cloudImage ||
+        (dbMatch.cover_media_id
+          ? `/api/media/${dbMatch.cover_media_id}?size=medium`
+          : def.default_image),
     };
   });
 

@@ -39,9 +39,14 @@ export default function ProjectsSection({
       id: p.id || i + 1,
       title: p.title,
       slug: p.slug,
-      cover: p.cover_media_id
-        ? `/api/media/${p.cover_media_id}?size=medium`
-        : `/images/projects/project-${(i % 8) + 1}.webp`,
+      cover:
+        ((p as unknown as { cover_medium?: string }).cover_medium && (p as unknown as { cover_medium?: string }).cover_medium?.startsWith("http"))
+          ? (p as unknown as { cover_medium?: string }).cover_medium!
+          : ((p as unknown as { cover_path?: string }).cover_path && (p as unknown as { cover_path?: string }).cover_path?.startsWith("http"))
+          ? (p as unknown as { cover_path?: string }).cover_path!
+          : p.cover_media_id
+          ? `/api/media/${p.cover_media_id}?size=medium`
+          : `/images/projects/project-${(i % 8) + 1}.webp`,
       service: (p as unknown as { service_name?: string }).service_name || "Creative Design",
       videoUrl: (p as unknown as { video_url?: string }).video_url || (isVid ? "https://www.youtube.com/watch?v=EngW7tLk6R8" : null),
       isVideo: isVid,

@@ -79,9 +79,13 @@ export default async function HomePage() {
         WHERE t.deleted_at IS NULL AND t.visible = 1
         ORDER BY t.display_order ASC
       `),
-      query<Service>(
-        "SELECT id, name, slug, cover_media_id FROM services WHERE deleted_at IS NULL AND visible = 1 ORDER BY display_order ASC"
-      ),
+      query<Service>(`
+        SELECT s.id, s.name, s.slug, s.cover_media_id, m.storage_path, m.medium_path
+        FROM services s
+        LEFT JOIN media m ON s.cover_media_id = m.id
+        WHERE s.deleted_at IS NULL AND s.visible = 1
+        ORDER BY s.display_order ASC
+      `),
     ]);
 
     featuredProjects = projectsRes;

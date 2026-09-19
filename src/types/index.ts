@@ -34,6 +34,9 @@ export interface Service {
   updated_at: string;
   // joined
   cover?: MediaRecord | null;
+  storage_path?: string | null;
+  medium_path?: string | null;
+  thumb_path?: string | null;
 }
 
 export interface ServicePackage {

@@ -67,9 +67,14 @@ export default function PortfolioGrid({ projects, services }: PortfolioGridProps
         <div className="grid-3">
           {filtered.map((project, idx) => {
             const svc = project as Project & { service_name?: string };
-            const coverUrl = project.cover_media_id
-              ? `/api/media/${project.cover_media_id}?size=medium`
-              : null;
+            const coverUrl =
+              ((project as unknown as { cover_medium?: string }).cover_medium && (project as unknown as { cover_medium?: string }).cover_medium?.startsWith("http"))
+                ? (project as unknown as { cover_medium?: string }).cover_medium!
+                : ((project as unknown as { cover_path?: string }).cover_path && (project as unknown as { cover_path?: string }).cover_path?.startsWith("http"))
+                ? (project as unknown as { cover_path?: string }).cover_path!
+                : project.cover_media_id
+                ? `/api/media/${project.cover_media_id}?size=medium`
+                : null;
             return (
               <button
                 type="button"

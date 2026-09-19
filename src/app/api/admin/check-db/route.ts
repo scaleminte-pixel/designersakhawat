@@ -43,3 +43,58 @@ export async function GET() {
     }, { status: 500 });
   }
 }
+
+export async function POST() {
+  try {
+    const { execute } = await import("@/lib/db");
+    const { revalidatePath } = await import("next/cache");
+
+    // Fix media 22 (Logo & Branding -> Buyzzar logo)
+    await execute(
+      `UPDATE media SET 
+        storage_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/v1789829625/portfolio_uploads/buyzzar_logo_branding.webp',
+        medium_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/v1789829625/portfolio_uploads/buyzzar_logo_branding.webp',
+        thumb_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/c_thumb,w_300,h_300,g_face,q_auto,f_auto/v1789829625/portfolio_uploads/buyzzar_logo_branding.webp'
+      WHERE id = 22`
+    );
+
+    // Fix media 25 (Ads Creative Design -> project 3)
+    await execute(
+      `UPDATE media SET 
+        storage_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/v1789827842/portfolio_uploads/project-3.webp',
+        medium_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/v1789827842/portfolio_uploads/project-3.webp',
+        thumb_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/c_thumb,w_300,h_300,g_face,q_auto,f_auto/v1789827842/portfolio_uploads/project-3.webp'
+      WHERE id = 25`
+    );
+
+    // Fix media 24 (Packaging & Label Design -> project 2)
+    await execute(
+      `UPDATE media SET 
+        storage_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/v1789827841/portfolio_uploads/project-2.webp',
+        medium_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/v1789827841/portfolio_uploads/project-2.webp',
+        thumb_path = 'https://res.cloudinary.com/sgmbxuyt/image/upload/c_thumb,w_300,h_300,g_face,q_auto,f_auto/v1789827841/portfolio_uploads/project-2.webp'
+      WHERE id = 24`
+    );
+
+    // Make sure services point to valid media
+    await execute("UPDATE services SET cover_media_id = 22 WHERE id = 1");
+    await execute("UPDATE services SET cover_media_id = 25 WHERE id = 2");
+    await execute("UPDATE services SET cover_media_id = 24 WHERE id = 3");
+    await execute("UPDATE services SET cover_media_id = 4 WHERE id = 4");
+
+    revalidatePath("/");
+    revalidatePath("/services");
+
+    return NextResponse.json({
+      status: "SUCCESS",
+      message: "Successfully fixed media 22, 24, 25 to permanent Cloudinary URLs!",
+    });
+  } catch (err: unknown) {
+    const error = err as { message?: string };
+    return NextResponse.json({
+      status: "ERROR",
+      message: error?.message || "Failed to update media",
+    }, { status: 500 });
+  }
+}
+

@@ -85,9 +85,14 @@ export default function HeroSection({ settings, featuredProjects = [] }: HeroSec
           badge: (p as unknown as { service_name?: string }).service_name || "Portfolio",
           title: p.title,
           subtitle: p.short_description || "",
-          image: p.cover_media_id
-            ? `/api/media/${p.cover_media_id}?size=medium`
-            : "/images/projects/project-1.webp",
+          image:
+            ((p as unknown as { cover_medium?: string }).cover_medium && (p as unknown as { cover_medium?: string }).cover_medium?.startsWith("http"))
+              ? (p as unknown as { cover_medium?: string }).cover_medium!
+              : ((p as unknown as { cover_path?: string }).cover_path && (p as unknown as { cover_path?: string }).cover_path?.startsWith("http"))
+              ? (p as unknown as { cover_path?: string }).cover_path!
+              : p.cover_media_id
+              ? `/api/media/${p.cover_media_id}?size=medium`
+              : "/images/projects/project-1.webp",
           slug: p.slug,
           videoUrl: p.video_url || null,
           isVideo: !!(p.video_url),

@@ -55,12 +55,19 @@ export default function UnifiedCapabilitiesBento({ dbServices = [] }: UnifiedCap
   // Merge DB service cover images into static capabilities
   const capabilities = staticCapabilities.map((cap) => {
     const dbMatch = dbServices.find((s) => s.slug === cap.slug);
+    const cloudImage =
+      (dbMatch?.medium_path && dbMatch.medium_path.startsWith("http"))
+        ? dbMatch.medium_path
+        : (dbMatch?.storage_path && dbMatch.storage_path.startsWith("http"))
+        ? dbMatch.storage_path
+        : null;
+
     return {
       ...cap,
       title: dbMatch?.name || cap.title,
-      image: dbMatch?.cover_media_id
+      image: cloudImage || (dbMatch?.cover_media_id
         ? `/api/media/${dbMatch.cover_media_id}?size=medium`
-        : cap.image,
+        : cap.image),
     };
   });
 
