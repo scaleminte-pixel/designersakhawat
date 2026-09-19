@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
     "iron-session": "^9.0.1",
     "multer": "^2.4.0",
     "mysql2": "^3.24.4",

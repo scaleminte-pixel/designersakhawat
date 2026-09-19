@@ -3,6 +3,25 @@ import fs from "fs/promises";
 import { nanoid } from "nanoid";
 import sharp from "sharp";
 import { execute } from "@/lib/db";
+import { v2 as cloudinary } from "cloudinary";
+
+function isCloudinaryConfigured(): boolean {
+  return !!(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  );
+}
+
+function getCloudinary() {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+  });
+  return cloudinary;
+}
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
@@ -118,8 +137,50 @@ export async function processUpload(
   let mediumPath: string | null = null;
   let webpPath: string | null = null;
 
-  if (IMAGE_MIME_TYPES.has(mimeType)) {
-    // Process image with Sharp
+  if (isCloudinaryConfigured()) {
+    const cld = getCloudinary();
+    const isImage = IMAGE_MIME_TYPES.has(mimeType);
+    const resourceType = isImage ? "image" : "video";
+
+    const cldResult = await new Promise<{
+      secure_url: string;
+      width?: number;
+      height?: number;
+      bytes: number;
+      format: string;
+    }>((resolve, reject) => {
+      const stream = cld.uploader.upload_stream(
+        {
+          folder: "portfolio_uploads",
+          resource_type: resourceType,
+          public_id: `${id}_${safeName}`,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          else resolve(result as any);
+        }
+      );
+      stream.end(buffer);
+    });
+
+    width = cldResult.width ?? null;
+    height = cldResult.height ?? null;
+    storagePath = cldResult.secure_url;
+
+    if (isImage) {
+      thumbPath = cldResult.secure_url.replace(
+        "/upload/",
+        "/upload/c_fill,w_400,h_300,q_auto,f_auto/"
+      );
+      mediumPath = cldResult.secure_url.replace(
+        "/upload/",
+        "/upload/c_limit,w_1200,h_1200,q_auto,f_auto/"
+      );
+      webpPath = cldResult.secure_url.replace("/upload/", "/upload/q_auto,f_webp/");
+    }
+  } else if (IMAGE_MIME_TYPES.has(mimeType)) {
+    // Local fallback: Process image with Sharp
     const sharpInstance = sharp(buffer, { failOn: "none" });
     const metadata = await sharpInstance.metadata();
     width = metadata.width ?? null;

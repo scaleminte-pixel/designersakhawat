@@ -33,6 +33,11 @@ export async function GET(
     filePath = media.storage_path;
   }
 
+  // If cloud storage URL (Cloudinary), redirect to CDN
+  if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
+    return NextResponse.redirect(filePath, 307);
+  }
+
   try {
     const fileBuffer = await fs.readFile(filePath);
     const ext = path.extname(filePath).toLowerCase();
