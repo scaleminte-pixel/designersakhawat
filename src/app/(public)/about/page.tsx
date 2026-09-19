@@ -11,8 +11,8 @@ export const revalidate = 60;
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings(["site_name", "seo_default_description"]);
   return {
-    title: `About Md Sakhawat Hossain | Senior Brand & UI/UX Designer`,
-    description: "Learn about Md Sakhawat Hossain — creative graphic designer with 3+ years of experience delivering 590+ successful branding, packaging, and digital projects worldwide.",
+    title: `About ${settings.site_name || "Md Sakhawat Hossain"} | Senior Brand & UI/UX Designer`,
+    description: settings.seo_default_description || "Learn about Md Sakhawat Hossain — creative graphic designer with 3+ years of experience delivering 590+ successful branding, packaging, and digital projects worldwide.",
   };
 }
 
@@ -21,7 +21,7 @@ export default async function AboutPage() {
     "site_name", "site_tagline", "about_bio",
     "contact_whatsapp_url", "contact_email",
     "social_facebook", "social_instagram", "social_linkedin", "social_behance", "social_youtube",
-    "contact_location",
+    "contact_location", "stat_years_exp", "stat_projects", "stat_satisfaction", "creator_tagline",
   ]);
 
   return (

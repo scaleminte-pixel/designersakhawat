@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { execute, query, queryOne } from "@/lib/db";
+import { execute } from "@/lib/db";
 import { hashIp, checkRateLimit, getClientIp } from "@/lib/auth/rate-limit";
 import { sendMail, buildInquiryEmailHtml } from "@/lib/mail";
 import { z } from "zod";

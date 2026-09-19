@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import type { Service } from "@/types";
 
 interface ServicesSectionProps {
@@ -17,6 +16,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
   const defaultServiceCovers: Record<string, string> = {
     "logo-branding": "/images/services/service-1.webp",
     "social-media-design": "/images/services/service-2.webp",
+    "ads-creative-design": "/images/services/service-2.webp",
     "packaging-label-design": "/images/services/service-3.webp",
     "ai-video-editing": "/images/services/service-4.webp",
   };
@@ -32,6 +32,12 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
       tag: "Conversion & Reach",
       blurb: "Scroll-stopping social media creatives engineered to boost engagement and ad ROI.",
       deliverables: ["High-Converting Carousel Kits", "Meta & TikTok Ad Templates", "Story & Feed Visual Systems", "Photoshop & Figma Editable Files"],
+      highlight: "Battle-tested ad layouts that increase CTR by an average of 35-45%.",
+    },
+    "ads-creative-design": {
+      tag: "Conversion & Reach",
+      blurb: "High-converting social and digital ad creatives engineered to maximize click-throughs and revenue.",
+      deliverables: ["High-Converting Carousel Kits", "Meta & TikTok Ad Templates", "Direct-Response Visual Systems", "Photoshop & Figma Editable Files"],
       highlight: "Battle-tested ad layouts that increase CTR by an average of 35-45%.",
     },
     "packaging-label-design": {
@@ -106,7 +112,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                   className={`service-tab-btn ${isActive ? "active" : ""}`}
                   onClick={() => setActiveIndex(idx)}
                   onMouseEnter={() => setActiveIndex(idx)}
-                  role="button"
+                  role="tab"
                   tabIndex={0}
                   aria-selected={isActive}
                 >
@@ -121,7 +127,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                         color: isActive ? "var(--accent)" : "var(--text-muted)",
                       }}
                     >
-                      0{idx + 1} // {meta.tag}
+                      0{idx + 1} &bull; {meta.tag}
                     </span>
                     {isActive && (
                       <span
@@ -199,13 +205,19 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
           {/* Right Column: Dynamic Visual Stage (Matches Full Height of Service Tabs) */}
           <div style={{ position: "relative", height: "100%", minHeight: 520, display: "flex", flexDirection: "column" }}>
             <div className="service-preview-stage">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={activeCover}
                 src={activeCover}
                 alt={activeService.name}
-                fill
-                sizes="(max-width: 992px) 100vw, 800px"
-                style={{ objectFit: "cover", objectPosition: "center center" }}
-                priority
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center center",
+                  display: "block",
+                  transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
               />
 
               {/* Gradient Vignette & Overlay */}

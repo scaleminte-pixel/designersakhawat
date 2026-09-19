@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface MediaItem {
   id: number; filename: string; original_name: string; mime_type: string;
@@ -34,7 +34,7 @@ export default function AdminMediaPage() {
 
   function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 3000); }
 
-  async function fetchMedia(pg = 1, type = typeFilter) {
+  const fetchMedia = useCallback(async (pg = 1, type = typeFilter) => {
     setLoading(true);
     const params = new URLSearchParams({ page: String(pg), limit: String(LIMIT) });
     if (type) params.set("type", type);
@@ -43,9 +43,9 @@ export default function AdminMediaPage() {
     setMedia(data.media || []);
     setTotal(data.total || 0);
     setLoading(false);
-  }
+  }, [typeFilter]);
 
-  useEffect(() => { fetchMedia(page, typeFilter); }, [page, typeFilter]);
+  useEffect(() => { fetchMedia(page, typeFilter); }, [fetchMedia, page, typeFilter]);
 
   const selectedItem = selected !== null ? media.find((m) => m.id === selected) : null;
 
@@ -152,6 +152,39 @@ export default function AdminMediaPage() {
           ) : (
             <p style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)" }}>Drop images here or click to upload</p>
           )}
+        </div>
+
+        {/* Size Guide */}
+        <div style={{
+          background: "var(--bg-surface)", border: "1px solid var(--bg-border)",
+          borderRadius: "var(--radius-md)", padding: "var(--space-md)",
+          marginBottom: "var(--space-lg)", fontSize: "var(--text-xs)",
+        }}>
+          <div style={{ fontWeight: 700, color: "var(--text-secondary)", marginBottom: 10, fontSize: "var(--text-sm)", display: "flex", alignItems: "center", gap: 6 }}>
+            📐 Recommended Image Sizes
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 8 }}>
+            {[
+              { label: "Portfolio Cover", size: "1200 × 800 px", ratio: "3:2", color: "var(--accent)" },
+              { label: "Service Cover", size: "1200 × 800 px", ratio: "3:2", color: "var(--accent)" },
+              { label: "Client Logo", size: "400 × 200 px", ratio: "2:1 transparent PNG", color: "var(--info)" },
+              { label: "Testimonial Photo", size: "400 × 400 px", ratio: "1:1 square", color: "var(--warning)" },
+              { label: "Profile Photo", size: "800 × 800 px", ratio: "1:1 square", color: "var(--warning)" },
+              { label: "Gallery Image", size: "1920 × 1080 px", ratio: "16:9 any", color: "var(--success)" },
+            ].map((item) => (
+              <div key={item.label} style={{
+                background: "var(--bg-base)", borderRadius: "var(--radius-sm)",
+                padding: "8px 10px", borderLeft: `3px solid ${item.color}`,
+              }}>
+                <div style={{ fontWeight: 600, color: "var(--text-primary)", marginBottom: 2 }}>{item.label}</div>
+                <div style={{ color: "var(--accent)", fontFamily: "monospace", fontSize: "0.7rem" }}>{item.size}</div>
+                <div style={{ color: "var(--text-muted)", fontSize: "0.65rem" }}>{item.ratio}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 10, color: "var(--text-muted)", fontSize: "0.68rem" }}>
+            💡 বড় সাইজ upload করুন — সিস্টেম নিজেই thumb (400px) ও medium (1200px) তৈরি করে নেবে। Max: 50MB, Format: JPG/PNG/WebP
+          </div>
         </div>
 
         {/* Grid */}

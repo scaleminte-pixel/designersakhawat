@@ -169,38 +169,49 @@ export default function AdminProjectEditPage() {
                 <img
                   src={`/api/media/${project.cover_media_id}?size=thumb`}
                   alt="Project Cover"
-                  style={{ width: 100, height: 70, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1.5px solid var(--accent)" }}
+                  style={{ width: 100, height: 70, objectFit: "cover", borderRadius: "var(--radius-sm)", border: "1.5px solid var(--accent)", flexShrink: 0 }}
                 />
               ) : (
-                <div style={{ width: 100, height: 70, background: "var(--bg-surface)", borderRadius: "var(--radius-sm)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: 24, border: "1px dashed var(--bg-border)" }}>
+                <div style={{ width: 100, height: 70, background: "var(--bg-surface)", borderRadius: "var(--radius-sm)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: 24, border: "1px dashed var(--bg-border)", flexShrink: 0 }}>
                   🖼️
                 </div>
               )}
-              <div style={{ display: "flex", gap: "var(--space-xs)", alignItems: "center", flexWrap: "wrap" }}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="project-cover-upload"
-                  style={{ display: "none" }}
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (file) await uploadCover(file);
-                    e.target.value = "";
-                  }}
-                />
-                <label htmlFor="project-cover-upload" className="btn btn-outline btn-sm" style={{ cursor: "pointer" }}>
-                  {uploadingCover ? "Uploading..." : project.cover_media_id ? "Change Cover Image" : "Upload Cover Image"}
-                </label>
-                {project.cover_media_id && (
-                  <button
-                    type="button"
-                    onClick={() => setProject((p) => p ? { ...p, cover_media_id: null } : p)}
-                    className="btn btn-ghost btn-sm btn-danger"
-                  >
-                    Remove Cover
-                  </button>
-                )}
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>Or choose from Gallery tab</span>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ display: "flex", gap: "var(--space-xs)", alignItems: "center", flexWrap: "wrap" }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="project-cover-upload"
+                    style={{ display: "none" }}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) await uploadCover(file);
+                      e.target.value = "";
+                    }}
+                  />
+                  <label htmlFor="project-cover-upload" className="btn btn-outline btn-sm" style={{ cursor: "pointer" }}>
+                    {uploadingCover ? "Uploading..." : project.cover_media_id ? "Change Cover Image" : "Upload Cover Image"}
+                  </label>
+                  {project.cover_media_id && (
+                    <button
+                      type="button"
+                      onClick={() => setProject((p) => p ? { ...p, cover_media_id: null } : p)}
+                      className="btn btn-ghost btn-sm btn-danger"
+                    >
+                      Remove Cover
+                    </button>
+                  )}
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--text-muted)" }}>Or choose from Gallery tab</span>
+                </div>
+                {/* Size Hint */}
+                <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: "0.7rem", background: "rgba(212,255,0,0.08)", border: "1px solid rgba(212,255,0,0.2)", color: "var(--accent)", padding: "2px 8px", borderRadius: 99, fontWeight: 700, fontFamily: "monospace" }}>
+                    ✓ 1200 × 800 px
+                  </span>
+                  <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
+                    Landscape 3:2 · JPG/PNG/WebP · Portfolio grid card ও detail hero-তে দেখায়
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -277,10 +288,37 @@ export default function AdminProjectEditPage() {
               <input type="number" className="form-input" value={project.display_order} onChange={(e) => setProject((p) => p ? { ...p, display_order: parseInt(e.target.value) } : p)} />
             </div>
           </div>
-          <label style={{ display: "flex", gap: "var(--space-sm)", alignItems: "center", cursor: "pointer" }}>
-            <input type="checkbox" checked={!!project.featured} onChange={(e) => setProject((p) => p ? { ...p, featured: e.target.checked ? 1 : 0 } : p)} />
-            <span style={{ fontSize: "var(--text-sm)" }}>⭐ Featured on homepage</span>
-          </label>
+          {/* Hero Showcase Toggle */}
+          <div style={{
+            background: project.featured ? "rgba(212, 255, 0, 0.06)" : "var(--bg-surface)",
+            border: `1.5px solid ${project.featured ? "rgba(212, 255, 0, 0.35)" : "var(--bg-border)"}`,
+            borderRadius: "var(--radius-md)",
+            padding: "var(--space-md)",
+            display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--space-md)",
+            transition: "all 0.2s ease",
+          }}>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: "var(--text-sm)", color: "var(--text-primary)", marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}>
+                <span>🏠</span>
+                <span>Show in Homepage Hero Showcase</span>
+                {project.featured ? (
+                  <span style={{ background: "rgba(212, 255, 0, 0.15)", color: "var(--accent)", fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 99, textTransform: "uppercase", letterSpacing: "0.05em" }}>Active</span>
+                ) : null}
+              </div>
+              <div style={{ fontSize: "var(--text-xs)", color: "var(--text-muted)", lineHeight: 1.5 }}>
+                এই project-টি homepage-এর hero section-এর 4টা showcase card-এ দেখাবে।<br/>
+                Display Order (নিচে) দিয়ে কোনটা আগে দেখাবে সেটা ঠিক করুন। Max 4টা দেখায়।
+              </div>
+            </div>
+            <label style={{ cursor: "pointer", flexShrink: 0 }}>
+              <input
+                type="checkbox"
+                checked={!!project.featured}
+                onChange={(e) => setProject((p) => p ? { ...p, featured: e.target.checked ? 1 : 0 } : p)}
+                style={{ width: 20, height: 20, cursor: "pointer", accentColor: "var(--accent)" }}
+              />
+            </label>
+          </div>
           <button onClick={saveProject} disabled={saving} className="btn btn-primary btn-sm" style={{ alignSelf: "flex-start" }}>
             {saving ? "Saving..." : "Save Details"}
           </button>
@@ -312,6 +350,15 @@ export default function AdminProjectEditPage() {
             <label htmlFor="gallery-upload" className="btn btn-outline btn-sm" style={{ cursor: "pointer" }}>
               {uploadingMedia ? "Uploading..." : "Choose Files"}
             </label>
+            {/* Size Hint */}
+            <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "0.7rem", background: "rgba(212,255,0,0.08)", border: "1px solid rgba(212,255,0,0.2)", color: "var(--accent)", padding: "2px 8px", borderRadius: 99, fontWeight: 700, fontFamily: "monospace" }}>
+                ✓ 1920 × 1080 px
+              </span>
+              <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
+                Full-size gallery images · যেকোনো ratio · JPG/PNG/WebP · Lightbox-এ full screen দেখায়
+              </span>
+            </div>
           </div>
 
           {/* Gallery grid */}

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-interface MediaItem { id: number; thumb_path: string | null; alt_text: string | null; }
 interface Package { id?: number; name: string; price: string; currency: string; is_starting_from: boolean; description: string; features: string[]; display_order: number; visible: boolean; }
 interface Service { id: number; name: string; slug: string; description: string | null; pricing_mode: string; display_order: number; visible: number; cover_media_id: number | null; }
 
@@ -164,30 +163,41 @@ export default function AdminServiceEditPage() {
                 🖼️
               </div>
             )}
-            <div style={{ display: "flex", gap: "var(--space-xs)", alignItems: "center" }}>
-              <input
-                type="file"
-                accept="image/*"
-                id="service-cover-upload"
-                style={{ display: "none" }}
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (file) await uploadCover(file);
-                  e.target.value = "";
-                }}
-              />
-              <label htmlFor="service-cover-upload" className="btn btn-outline btn-sm" style={{ cursor: "pointer" }}>
-                {uploadingCover ? "Uploading..." : service.cover_media_id ? "Change Banner" : "Upload Banner Image"}
-              </label>
-              {service.cover_media_id && (
-                <button
-                  type="button"
-                  onClick={() => setService((prev) => prev ? { ...prev, cover_media_id: null } : prev)}
-                  className="btn btn-ghost btn-sm btn-danger"
-                >
-                  Remove
-                </button>
-              )}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ display: "flex", gap: "var(--space-xs)", alignItems: "center" }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="service-cover-upload"
+                  style={{ display: "none" }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) await uploadCover(file);
+                    e.target.value = "";
+                  }}
+                />
+                <label htmlFor="service-cover-upload" className="btn btn-outline btn-sm" style={{ cursor: "pointer" }}>
+                  {uploadingCover ? "Uploading..." : service.cover_media_id ? "Change Banner" : "Upload Banner Image"}
+                </label>
+                {service.cover_media_id && (
+                  <button
+                    type="button"
+                    onClick={() => setService((prev) => prev ? { ...prev, cover_media_id: null } : prev)}
+                    className="btn btn-ghost btn-sm btn-danger"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              {/* Size Hint */}
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <span style={{ fontSize: "0.7rem", background: "rgba(212,255,0,0.08)", border: "1px solid rgba(212,255,0,0.2)", color: "var(--accent)", padding: "2px 8px", borderRadius: 99, fontWeight: 700, fontFamily: "monospace" }}>
+                  ✓ 1200 × 800 px
+                </span>
+                <span style={{ fontSize: "0.68rem", color: "var(--text-muted)" }}>
+                  Landscape 3:2 · JPG/PNG/WebP · Services page card ও detail hero-তে দেখায়
+                </span>
+              </div>
             </div>
           </div>
         </div>

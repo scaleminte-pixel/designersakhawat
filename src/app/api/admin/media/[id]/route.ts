@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/session";
 import { execute, queryOne, query } from "@/lib/db";
-import path from "path";
 import fs from "fs/promises";
 
 type Params = { params: Promise<{ id: string }> };

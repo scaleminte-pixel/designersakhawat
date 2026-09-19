@@ -6,7 +6,7 @@ const URLS = [
   { url: 'http://localhost:3000/services', name: 'Services Listing' },
   { url: 'http://localhost:3000/services/logo-branding', name: 'Service: Logo Branding' },
   { url: 'http://localhost:3000/services/packaging-label-design', name: 'Service: Packaging' },
-  { url: 'http://localhost:3000/services/social-media-design', name: 'Service: Social Media' },
+  { url: 'http://localhost:3000/services/ads-creative-design', name: 'Service: Ads Creative Design' },
   { url: 'http://localhost:3000/services/ai-video-editing', name: 'Service: AI Video' },
   { url: 'http://localhost:3000/portfolio', name: 'Portfolio Listing' },
   { url: 'http://localhost:3000/portfolio/aura-tech-brand-identity', name: 'Project: Aura Tech' },

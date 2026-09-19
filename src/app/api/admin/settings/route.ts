@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/session";
-import { query, execute, queryOne } from "@/lib/db";
+import { query, execute } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
 /** GET /api/admin/settings */

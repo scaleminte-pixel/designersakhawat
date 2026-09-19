@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface Inquiry {
   id: number; name: string; email: string; service: string | null;
@@ -19,7 +19,7 @@ export default function AdminInquiriesPage() {
 
   function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 3000); }
 
-  async function fetchInquiries() {
+  const fetchInquiries = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams({ page: String(page) });
     if (filter === "unread") params.set("unread", "true");
@@ -29,9 +29,9 @@ export default function AdminInquiriesPage() {
     setTotal(data.total || 0);
     setUnreadCount(data.unreadCount || 0);
     setLoading(false);
-  }
+  }, [page, filter]);
 
-  useEffect(() => { fetchInquiries(); }, [page, filter]);
+  useEffect(() => { fetchInquiries(); }, [fetchInquiries]);
 
   async function markRead(id: number) {
     await fetch("/api/admin/inquiries", {

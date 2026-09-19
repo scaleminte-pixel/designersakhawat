@@ -4,7 +4,7 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import PortfolioPerServiceShowcase from "@/components/public/PortfolioPerServiceShowcase";
 import ContactCTA from "@/components/public/ContactCTA";
-import type { Project, Service } from "@/types";
+import type { Project } from "@/types";
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -23,24 +23,18 @@ type ExtendedProject = Project & {
 export default async function PortfolioPage() {
   const settings = await getSettings(["contact_whatsapp_url", "contact_email"]);
   let projects: ExtendedProject[] = [];
-  let services: Service[] = [];
 
   try {
-    [projects, services] = await Promise.all([
-      query<ExtendedProject>(`
-        SELECT p.*,
-          s.name as service_name, s.slug as service_slug,
-          m.storage_path as cover_path, m.thumb_path as cover_thumb, m.medium_path as cover_medium, m.alt_text as cover_alt
-        FROM projects p
-        LEFT JOIN services s ON p.service_id = s.id
-        LEFT JOIN media m ON p.cover_media_id = m.id
-        WHERE p.status = 'published'
-        ORDER BY p.display_order ASC, p.published_at DESC
-      `),
-      query<Service>(
-        "SELECT id, name, slug FROM services WHERE deleted_at IS NULL AND visible = 1 ORDER BY display_order ASC"
-      ),
-    ]);
+    projects = await query<ExtendedProject>(`
+      SELECT p.*,
+        s.name as service_name, s.slug as service_slug,
+        m.storage_path as cover_path, m.thumb_path as cover_thumb, m.medium_path as cover_medium, m.alt_text as cover_alt
+      FROM projects p
+      LEFT JOIN services s ON p.service_id = s.id
+      LEFT JOIN media m ON p.cover_media_id = m.id
+      WHERE p.status = 'published'
+      ORDER BY p.display_order ASC, p.published_at DESC
+    `);
   } catch {
     // Graceful fallback
   }
@@ -263,7 +257,7 @@ export default async function PortfolioPage() {
         (p.service_name && p.service_name.toLowerCase().includes(cfg.name.toLowerCase()))
     );
 
-    let mappedProjects: Array<{
+    const mappedProjects: Array<{
       id: number | string;
       title: string;
       slug: string;

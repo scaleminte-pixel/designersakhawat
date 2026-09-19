@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: "i.vimeocdn.com" },
     ],
+    localPatterns: [
+      { pathname: "/api/media/**" },
+      { pathname: "/images/**" },
+    ],
     formats: ["image/avif", "image/webp"],
   },
   headers: async () => [

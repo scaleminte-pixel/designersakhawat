@@ -80,8 +80,19 @@ export default function ClientLogosSection({ logos }: ClientLogosSectionProps) {
     },
   ];
 
+  // If dynamic logos are passed from DB, combine or use them
+  const activeBrands = (logos && logos.length > 0)
+    ? logos.map((l, i) => ({
+        id: `db-${l.id || i}`,
+        name: l.name.toUpperCase(),
+        tag: "Verified Client",
+        logoUrl: l.media_id ? `/api/media/${l.media_id}?size=thumb` : null,
+        icon: brandList[i % brandList.length]?.icon || brandList[0].icon,
+      }))
+    : brandList;
+
   // Repeat for continuous seamless infinite drift
-  const marqueeItems = [...brandList, ...brandList, ...brandList];
+  const marqueeItems = [...activeBrands, ...activeBrands, ...activeBrands];
 
   return (
     <section

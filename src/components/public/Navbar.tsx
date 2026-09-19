@@ -35,7 +35,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="floating-header" role="banner">
+      <header className={`floating-header ${scrolled ? "scrolled" : ""}`} role="banner">
         <div className="container floating-nav-container">
           {/* Brand Logo */}
           <Link href="/" className="nav-logo" aria-label="Md Sakhawat Hossain — Home">
@@ -84,19 +84,6 @@ export default function Navbar() {
               onClick={() => setMenuOpen(!menuOpen)}
               aria-expanded={menuOpen}
               aria-label="Toggle navigation menu"
-              style={{
-                background: "rgba(18, 20, 26, 0.8)",
-                border: "1px solid var(--bg-border)",
-                color: "var(--text-primary)",
-                width: 42,
-                height: 42,
-                borderRadius: "var(--radius-md)",
-                display: "none",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 20,
-                cursor: "pointer",
-              }}
             >
               {menuOpen ? "✕" : "☰"}
             </button>

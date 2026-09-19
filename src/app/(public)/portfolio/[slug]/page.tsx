@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { queryOne, query } from "@/lib/db";
 import { getSettings } from "@/lib/db/settings";
@@ -70,11 +71,11 @@ export default async function ProjectPage({ params }: Props) {
         >
           <div className="container">
             <ol style={{ display: "flex", gap: "var(--space-sm)", color: "var(--text-muted)", fontSize: "var(--text-sm)", listStyle: "none" }}>
-              <li><a href="/portfolio" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Portfolio</a></li>
+              <li><Link href="/portfolio" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Portfolio</Link></li>
               <li aria-hidden="true">→</li>
               {project.service_name && (
                 <>
-                  <li><a href={`/services/${project.service_slug}`} style={{ color: "var(--text-muted)", textDecoration: "none" }}>{project.service_name}</a></li>
+                  <li><Link href={`/services/${project.service_slug}`} style={{ color: "var(--text-muted)", textDecoration: "none" }}>{project.service_name}</Link></li>
                   <li aria-hidden="true">→</li>
                 </>
               )}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { queryOne, query } from "@/lib/db";
 import { getSettings } from "@/lib/db/settings";
@@ -59,7 +60,12 @@ export default async function ServiceDetailPage({ params }: Props) {
   const whatsappBase = "https://wa.me/8801781955355";
   const whatsappMsg = encodeURIComponent(`Hi Sakhawat, I'm interested in your ${service.name} service.`);
   const whatsappUrl = `${whatsappBase}?text=${whatsappMsg}`;
-  const coverUrl = service.cover_media_id ? `/api/media/${service.cover_media_id}?size=medium` : null;
+  // Use service cover, or fall back to first project cover
+  const coverUrl = service.cover_media_id
+    ? `/api/media/${service.cover_media_id}?size=medium`
+    : projects[0]?.cover_media_id
+      ? `/api/media/${projects[0].cover_media_id}?size=medium`
+      : null;
 
   const showPricing = service.pricing_mode === "pricing" || service.pricing_mode === "both";
   const showQuote = service.pricing_mode === "quote_only" || service.pricing_mode === "both";
@@ -73,9 +79,9 @@ export default async function ServiceDetailPage({ params }: Props) {
           <div className="container">
             <div style={{ display: "grid", gridTemplateColumns: coverUrl ? "1fr 1fr" : "1fr", gap: "var(--space-3xl)", alignItems: "center" }}>
               <div>
-                <a href="/services" style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", marginBottom: "var(--space-md)", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <Link href="/services" style={{ color: "var(--text-muted)", fontSize: "var(--text-sm)", marginBottom: "var(--space-md)", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   ← Back to Services
-                </a>
+                </Link>
                 <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", marginBottom: "var(--space-md)" }}>
                   {service.name}
                 </h1>

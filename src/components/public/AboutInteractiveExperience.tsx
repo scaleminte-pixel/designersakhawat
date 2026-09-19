@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { SiteSettings } from "@/types";
 
 interface AboutInteractiveExperienceProps {
   settings: Record<string, string>;
@@ -87,12 +86,13 @@ export default function AboutInteractiveExperience({ settings }: AboutInteractiv
   ];
 
   const tools = [
-    { name: "Adobe Illustrator", level: "Master", icon: "Ai", focus: "Vector & Logos" },
-    { name: "Adobe Photoshop", level: "Master", icon: "Ps", focus: "Photo & 3D Mockup" },
-    { name: "Figma", level: "Advanced", icon: "Fg", focus: "UI/UX & Prototyping" },
-    { name: "Adobe After Effects", level: "Professional", icon: "Ae", focus: "Kinetic Motion" },
-    { name: "Midjourney & Runway", level: "Expert", icon: "AI", focus: "Generative Concepting" },
-    { name: "Adobe InDesign", level: "Advanced", icon: "Id", focus: "Editorial Layout" },
+    { name: "Adobe Illustrator", level: "Master", icon: "Ai", color: "#FF9A00", focus: "Vector & Brand Logos" },
+    { name: "Adobe Photoshop", level: "Master", icon: "Ps", color: "#31A8FF", focus: "Photo & 3D Mockup" },
+    { name: "Figma", level: "Advanced", icon: "Fg", color: "#A259FF", focus: "UI/UX & Design Systems" },
+    { name: "Adobe After Effects", level: "Professional", icon: "Ae", color: "#9999FF", focus: "Kinetic Motion & Reels" },
+    { name: "Midjourney & Runway", level: "Expert", icon: "AI", color: "#FF57B2", focus: "Generative AI Concepting" },
+    { name: "ChatGPT", level: "Expert", icon: "GPT", color: "#10A37F", focus: "Creative Strategy & Prompts" },
+    { name: "Google Flow", level: "Advanced", icon: "GF", color: "#4285F4", focus: "Workflow & Research Automation" },
   ];
 
   const careerTimeline = [
@@ -500,44 +500,71 @@ export default function AboutInteractiveExperience({ settings }: AboutInteractiv
               <div style={{ flex: 1, height: 1, background: "var(--bg-border)" }} />
             </div>
 
-            <div className="grid-3" style={{ gap: 16 }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                gap: 16,
+              }}
+            >
               {tools.map((t, idx) => (
                 <div
                   key={idx}
+                  className="soft-hover-lift"
                   style={{
-                    background: "var(--bg-surface)",
-                    border: "1px solid var(--bg-border)",
+                    background: "rgba(16, 18, 26, 0.75)",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
                     borderRadius: "var(--radius-lg)",
-                    padding: "16px 20px",
+                    padding: "18px 20px",
                     display: "flex",
                     alignItems: "center",
                     gap: 16,
+                    backdropFilter: "blur(10px)",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
                   }}
                 >
                   <div
                     style={{
-                      width: 42,
-                      height: 42,
+                      width: 46,
+                      height: 46,
                       borderRadius: "var(--radius-md)",
-                      background: "linear-gradient(135deg, rgba(212, 255, 0, 0.15) 0%, rgba(255, 255, 255, 0.02) 100%)",
-                      border: "1px solid rgba(212, 255, 0, 0.3)",
+                      background: `linear-gradient(135deg, ${t.color}22 0%, rgba(255, 255, 255, 0.02) 100%)`,
+                      border: `1px solid ${t.color}44`,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "0.9375rem",
-                      fontWeight: 800,
-                      color: "var(--accent)",
+                      fontSize: t.icon.length > 2 ? "0.8125rem" : "0.9375rem",
+                      fontWeight: 900,
+                      color: t.color,
                       fontFamily: "var(--font-heading)",
+                      boxShadow: `0 0 12px ${t.color}22`,
+                      flexShrink: 0,
                     }}
                   >
                     {t.icon}
                   </div>
-                  <div>
-                    <h4 style={{ fontSize: "0.9375rem", fontWeight: 700, margin: "0 0 2px" }}>
-                      {t.name}
-                    </h4>
-                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                      {t.level} · {t.focus}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, marginBottom: 2 }}>
+                      <h4 style={{ fontSize: "0.9375rem", fontWeight: 700, margin: 0, color: "#ffffff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {t.name}
+                      </h4>
+                      <span
+                        style={{
+                          fontSize: "0.625rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          padding: "2px 7px",
+                          borderRadius: "var(--radius-full)",
+                          background: `${t.color}15`,
+                          color: t.color,
+                          border: `1px solid ${t.color}30`,
+                        }}
+                      >
+                        {t.level}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {t.focus}
                     </span>
                   </div>
                 </div>

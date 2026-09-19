@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
 
 /** POST /api/admin/services */
 export async function POST(req: NextRequest) {
-  return requireAdmin(req, async (_req, session) => {
+  return requireAdmin(req, async () => {
     const body = await req.json();
     const { name, slug, description, cover_media_id, pricing_mode, display_order, visible } = body;
 

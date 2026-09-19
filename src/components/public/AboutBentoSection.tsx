@@ -8,18 +8,18 @@ export default function AboutBentoSection({ settings }: AboutBentoSectionProps) 
   const tools = [
     { name: "Photoshop", icon: "Ps" },
     { name: "Illustrator", icon: "Ai" },
-    { name: "InDesign", icon: "Id" },
-    { name: "Premiere Pro", icon: "Pr" },
-    { name: "After Effects", icon: "Ae" },
     { name: "Figma", icon: "Fg" },
+    { name: "After Effects", icon: "Ae" },
     { name: "Midjourney", icon: "Mj" },
+    { name: "ChatGPT", icon: "GPT" },
+    { name: "Google Flow", icon: "GF" },
   ];
 
   const stats = [
-    { value: "590+", label: "Delivered Projects" },
+    { value: settings?.stat_projects || "590+", label: "Delivered Projects" },
     { value: "37+", label: "Global Clients" },
-    { value: "3+", label: "Years Experience" },
-    { value: "99%", label: "5-Star Rating" },
+    { value: settings?.stat_years_exp || "3+", label: "Years Experience" },
+    { value: settings?.stat_satisfaction || "99%", label: "5-Star Rating" },
   ];
 
   return (
@@ -92,19 +92,19 @@ export default function AboutBentoSection({ settings }: AboutBentoSectionProps) 
             {/* Designer Details */}
             <div style={{ padding: "24px 28px 28px" }}>
               <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, color: "#ffffff", marginBottom: 4 }}>
-                Md Sakhawat Hossain
+                {settings?.site_name || "Md Sakhawat Hossain"}
               </h3>
               <p style={{ color: "var(--accent)", fontSize: "var(--text-sm)", fontWeight: 600, marginBottom: 12 }}>
-                Creative Graphic Designer & Brand Specialist
+                {settings?.site_tagline || "Creative Graphic Designer & Brand Specialist"}
               </p>
               <p style={{ color: "var(--text-secondary)", fontSize: "var(--text-sm)", lineHeight: 1.6, marginBottom: 20 }}>
-                Based in Dhaka, Bangladesh — collaborating with innovative startups, agency founders, and direct-to-consumer brands globally.
+                {settings?.about_bio || "Based in Dhaka, Bangladesh — collaborating with innovative startups, agency founders, and direct-to-consumer brands globally."}
               </p>
 
               {/* Social links pill bar (Reference 2 style) */}
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <a
-                  href="https://wa.me/8801781955355"
+                  href={settings?.contact_whatsapp_url || "https://wa.me/8801781955355"}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

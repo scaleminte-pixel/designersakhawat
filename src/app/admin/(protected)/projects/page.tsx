@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 
 interface Project {
@@ -22,16 +22,18 @@ export default function AdminProjectsPage() {
 
   function showToast(msg: string) { setToast(msg); setTimeout(() => setToast(null), 3000); }
 
-  async function fetchProjects() {
+  const fetchProjects = useCallback(async () => {
     setLoading(true);
     const url = filter ? `/api/admin/projects?status=${filter}` : "/api/admin/projects";
     const res = await fetch(url);
     const data = await res.json();
     setProjects(data.projects || []);
     setLoading(false);
-  }
+  }, [filter]);
 
-  useEffect(() => { fetchProjects(); }, [filter]);
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   function generateSlug(title: string) {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -53,6 +55,9 @@ export default function AdminProjectsPage() {
   }
 
   async function changeStatus(id: number, action: "publish" | "unpublish" | "trash" | "restore") {
+    if (action === "trash" && !confirm("Are you sure you want to move this project to trash?")) {
+      return;
+    }
     await fetch(`/api/admin/projects/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
