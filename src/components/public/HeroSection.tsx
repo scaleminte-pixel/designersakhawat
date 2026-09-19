@@ -308,36 +308,6 @@ export default function HeroSection({ settings, featuredProjects = [] }: HeroSec
                     loading="eager"
                     className="service-cover-img"
                   />
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      background:
-                        "linear-gradient(to top, rgba(8, 9, 12, 0.9) 0%, rgba(8, 9, 12, 0.2) 40%, transparent 100%)",
-                    }}
-                  />
-
-                  {/* Card Pill */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 12,
-                      left: 12,
-                      background: "rgba(10, 12, 16, 0.85)",
-                      border: "1px solid rgba(212, 255, 0, 0.35)",
-                      color: "var(--accent)",
-                      fontSize: 10,
-                      fontWeight: 750,
-                      padding: "4px 9px",
-                      borderRadius: "var(--radius-full)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      backdropFilter: "blur(8px)",
-                    }}
-                  >
-                    {card.badge}
-                  </span>
-
                   {card.isVideo && (
                     <span
                       style={{

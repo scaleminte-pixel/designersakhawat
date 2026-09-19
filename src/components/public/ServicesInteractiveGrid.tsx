@@ -140,54 +140,6 @@ export default function ServicesInteractiveGrid({
                   }}
                   className="service-cover-img"
                 />
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background:
-                      "linear-gradient(to top, rgba(12, 13, 17, 0.95) 0%, rgba(12, 13, 17, 0.25) 50%, transparent 100%)",
-                  }}
-                />
-
-                {/* Top Badge: Category */}
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 12,
-                    left: 12,
-                    background: "rgba(7, 7, 9, 0.85)",
-                    border: "1px solid rgba(212, 255, 0, 0.3)",
-                    color: "var(--accent)",
-                    fontSize: "0.6875rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    padding: "4px 10px",
-                    borderRadius: "var(--radius-full)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  {service.badge}
-                </span>
-
-                {/* Turnaround Time Badge */}
-                <span
-                  style={{
-                    position: "absolute",
-                    bottom: 12,
-                    right: 12,
-                    background: "rgba(212, 255, 0, 0.12)",
-                    border: "1px solid rgba(212, 255, 0, 0.25)",
-                    color: "var(--accent)",
-                    fontSize: "0.6875rem",
-                    fontWeight: 700,
-                    padding: "3px 9px",
-                    borderRadius: "var(--radius-sm)",
-                    backdropFilter: "blur(6px)",
-                  }}
-                >
-                  ⏱ {service.turnaround}
-                </span>
               </Link>
 
               {/* Service Card Body */}
