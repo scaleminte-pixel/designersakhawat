@@ -85,9 +85,13 @@ export async function POST(req: NextRequest) {
     await session.save();
 
     return NextResponse.json({ success: true, name: admin.name });
-  } catch (err) {
+  } catch (err: unknown) {
+    const error = err as { message?: string; code?: string };
     console.error("Login error:", err);
-    return NextResponse.json({ error: "Login failed." }, { status: 500 });
+    return NextResponse.json(
+      { error: error?.message || "Login failed due to server error." },
+      { status: 500 }
+    );
   }
 }
 
