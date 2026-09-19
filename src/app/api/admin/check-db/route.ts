@@ -15,12 +15,19 @@ export async function GET() {
   };
 
   try {
-    const users = await query("SELECT id, email, name, last_login FROM admin_users");
+    const [users, mediaRows, serviceRows] = await Promise.all([
+      query("SELECT id, email, name, last_login FROM admin_users"),
+      query("SELECT id, filename, storage_path FROM media ORDER BY id ASC LIMIT 30"),
+      query("SELECT id, name, slug, cover_media_id FROM services"),
+    ]);
     return NextResponse.json({
       status: "SUCCESS",
       message: "Connected to MySQL successfully!",
       env: envInfo,
       adminUsers: users,
+      services: serviceRows,
+      mediaCount: mediaRows.length,
+      media: mediaRows,
     });
   } catch (err: unknown) {
     const error = err as { message?: string; code?: string; sqlMessage?: string };
